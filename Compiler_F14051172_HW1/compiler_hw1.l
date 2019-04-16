@@ -73,9 +73,7 @@ CppComment			"/*"
 {Int_Number}			{ printf("%s \t I_CONST\n", yytext); }
 {Float_Number}			{ printf("%s \t F_CONST\n", yytext); }
 {String_Constants}		{ 
-							for (int i=0; i<strlen(yytext); i++) {
-								yytext[i] = yytext[i+1];
-							}
+							for (int i=0; i<strlen(yytext); i++) yytext[i] = yytext[i+1];
 							yytext[strlen(yytext)-1] = '\0';
 							printf("\" \t QUOTA\n");
 							printf("%s \t STR_CONST\n", yytext); 
