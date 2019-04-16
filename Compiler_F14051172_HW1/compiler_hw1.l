@@ -72,13 +72,22 @@ CppComment			"/*"
 "break"					{ printf("%s \t BREAK\n", yytext); }
 {Int_Number}			{ printf("%s \t I_CONST\n", yytext); }
 {Float_Number}			{ printf("%s \t F_CONST\n", yytext); }
-{String_Constants}		{ printf("%s \t STR_CONST\n", yytext); }
+{String_Constants}		{ 
+							for (int i=0; i<strlen(yytext); i++) {
+								yytext[i] = yytext[i+1];
+							}
+							yytext[strlen(yytext)-1] = '\0';
+							printf("\" \t QUOTA\n");
+							printf("%s \t STR_CONST\n", yytext); 
+							printf("\" \t QUOTA\n");
+						}
 {Identifier}			{ printf("%s \t ID\n", yytext); }
 {CComment}				{ printf("%s \t C++ COMMENT\n", yytext); commentLines++; }
-{CppComment}			{ BEGIN COMMENT; printf("%s", yytext); commentLines++; }
+{CppComment}			{ BEGIN COMMENT; printf("%s", yytext); }
 						
+<COMMENT>"*/"\n			{ printf("*/ \t C COMMENT\n"); commentLines++; codeLines++; BEGIN 0; }
 <COMMENT>"*/"			{ printf("*/ \t C COMMENT\n"); BEGIN 0; }
-<COMMENT>\n				{ printf("\n"); commentLines++; codeLines++; }
+<COMMENT>\n				{ printf("\n"); commentLines++; codeLines++;}
 <COMMENT>.				{ printf("%s", yytext); }
 
 \n						{codeLines++;}
